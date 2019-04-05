@@ -1,0 +1,24 @@
+<ion-item lines="none">
+  <ion-label position="stacked">From</ion-label>
+  <ion-input (ionInput)="updateSearch('origin')" placeholder="Origin" [(ngModel)]="model.origin" name="Origin">
+  </ion-input>
+</ion-item>
+
+<ion-list *ngIf="predictiveLists.origin.show">
+  <ion-item *ngFor="let location of predictiveLists.origin.predictions"
+    (click)="setLocation(location.description, 'origin')">
+    {{ location.description }}</ion-item>
+</ion-list>
+
+<ion-item lines="none">
+  <ion-label position="stacked">To</ion-label>
+  <ion-input (ionInput)="updateSearch('destination')" placeholder="Destination" [(ngModel)]="model.destination"
+    name="Destination">
+  </ion-input>
+</ion-item>
+
+<ion-list *ngIf="predictiveLists.destination.show">
+  <ion-item *ngFor="let location of predictiveLists.destination.predictions"
+    (click)="setLocation(location.description, 'destination')">
+    {{ location.description }}</ion-item>
+</ion-list>

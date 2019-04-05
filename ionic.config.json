@@ -1,5 +1,7 @@
 {
   "name": "hitch-hike-app",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

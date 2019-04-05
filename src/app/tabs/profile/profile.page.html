@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="light">
+      {{ username }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" color="light" name="cog"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-profile-content [carSharesUserOwns]="carSharesUserOwns" [carSharesUserIsBookedOnto]="carSharesUserIsBookedOnto">
+  </app-profile-content>
+</ion-content>

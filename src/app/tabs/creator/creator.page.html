@@ -1,0 +1,129 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="light">
+      Create a car share
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="createCarShare()">
+    <ion-card style="background: transparent; box-shadow: none">
+      <ion-text style="font-weight: 900; font-size: 24px">Create a car share</ion-text>
+    </ion-card>
+
+    <ion-card style="background: transparent; box-shadow: none">
+      <div class="step-row">
+        <div class="circle">
+          1
+        </div>
+        <ion-text>Location</ion-text>
+      </div>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>Where are you starting from and heading too?</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <app-search [model]="locations"></app-search>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card style="background: transparent; box-shadow: none">
+      <div class="step-row">
+        <div class="circle">
+          2
+        </div>
+        <ion-text>Choose a car</ion-text>
+      </div>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>Which car is being used for this car share?</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-list-header>Select a car</ion-list-header>
+
+          <ion-item lines="none">
+            <ion-select mode="md" *ngIf="carShare?.carId"
+              [interfaceOptions]="setCustomInterfaceOptions('Your available cars')" [(ngModel)]="carShare.carId"
+              name="Car">
+              <ion-select-option *ngFor="let availableCar of availableCars" [selected]="carShare?.carId"
+                [value]="availableCar._id">
+                {{ availableCar.make }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card style="background: transparent; box-shadow: none">
+      <div class="step-row">
+        <div class="circle">
+          3
+        </div>
+        <ion-text>Price</ion-text>
+      </div>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>What is your base charge for each individual passenger?</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-list-header>Enter a price</ion-list-header>
+
+          <ion-item lines="none">
+            <ion-label position="fixed">£</ion-label>
+            <ion-input [(ngModel)]="carShare.price" type="number" [value]="carShare?.price" name="Price">
+            </ion-input>
+          </ion-item>
+
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card style="background: transparent; box-shadow: none">
+      <div class="step-row">
+        <div class="circle">
+          4
+        </div>
+        <ion-text>Availability</ion-text>
+      </div>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>Whats days will your car share be available?</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-list-header>Select your available days</ion-list-header>
+
+          <ion-item lines="none">
+            <ion-select multiple mode="md" *ngIf="carShare?.runningDays"
+              [interfaceOptions]="setCustomInterfaceOptions('Choose available days')" [(ngModel)]="carShare.runningDays"
+              name="Running Days">
+              <ion-select-option *ngFor="let day of availableDays" [selected]="carShare?.runningDays" [value]="day">
+                {{ day }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="buttons-container">
+      <ion-button expand="block" fill="outline" shape="round" type="submit">
+        Create Car Share
+        <ion-icon slot="end" name="rocket"></ion-icon>
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

@@ -1,0 +1,45 @@
+<ion-card class="profile-card">
+  <ion-img src="../../../assets/car.png"></ion-img>
+</ion-card>
+
+
+<ion-list>
+  <ion-list-header>
+    <ion-text>Your car shares</ion-text>
+  </ion-list-header>
+
+  <ion-card *ngFor="let carShare of carSharesUserOwns">
+    <ion-card-header>
+      <ion-card-title>{{ carShare.origin.coordinates | placeName | async }} to
+        {{ carShare.destination.coordinates | placeName | async }}</ion-card-title>
+      <ion-card-subtitle>Passengers 2/{{ carShare.carInformation.passengers }}</ion-card-subtitle>
+      <ion-card-subtitle>Car {{ carShare.carInformation.make }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" fill="outline" shape="round">
+        Edit car share
+        <ion-icon slot="end" name="create"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-list>
+
+<ion-list>
+  <ion-list-header>
+    <ion-text>Upcoming trips</ion-text>
+  </ion-list-header>
+
+  <ion-card *ngFor="let booking of carSharesUserIsBookedOnto">
+    <ion-card-header>
+      <ion-card-title>{{ booking.carShareId }}</ion-card-title>
+      <ion-card-subtitle></ion-card-subtitle>
+      <ion-card-subtitle></ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" fill="outline" shape="round">
+        Cancel booking
+        <ion-icon slot="end" name="create"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-list>

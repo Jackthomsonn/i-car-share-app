@@ -1,0 +1,10 @@
+.profile-card {
+  ::ng-deep {
+    margin-top: 0;
+    margin-right: 0;
+    margin-left: 0;
+    border-radius: 0;
+    max-height: 10vh;
+    box-shadow: none;
+  }
+}

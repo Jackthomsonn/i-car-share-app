@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="light">
+      Your journey starts here
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="login()">
+    <ion-card>
+      <ion-text style="font-weight: 900; font-size: 24px">Login</ion-text>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-content>
+        <ion-list>
+          <ion-item lines="none">
+            <ion-label position="stacked">Username</ion-label>
+            <ion-input placeholder="Username" [(ngModel)]="user.username" type="text" [value]="user?.username"
+              name="Username">
+            </ion-input>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ion-label position="stacked">Password</ion-label>
+            <ion-input placeholder="Password" [(ngModel)]="user.password" type="password" [value]="user?.password"
+              name="Password">
+            </ion-input>
+          </ion-item>
+
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="buttons-container">
+      <ion-button expand="full" fill="outline" shape="round" type="submit">
+        Login
+        <ion-icon slot="end" name="rocket"></ion-icon>
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

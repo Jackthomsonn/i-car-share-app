@@ -1,0 +1,17 @@
+ion-item {
+  background: #FFF;
+
+  &:first-of-type {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  &:last-of-type {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  ion-input {
+    --placeholder-font-weight: 700;
+  }
+}
