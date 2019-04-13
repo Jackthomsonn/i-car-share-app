@@ -1,6 +1,7 @@
 <ion-item lines="none">
   <ion-label position="stacked">From</ion-label>
-  <ion-input (ionInput)="updateSearch('origin')" placeholder="Origin" [(ngModel)]="model.origin" name="Origin">
+  <ion-input (ionInput)="updateSearch('origin')" placeholder="Origin" [value]="originPlaceName"
+    [(ngModel)]="model.origin" name="Origin">
   </ion-input>
 </ion-item>
 
@@ -12,8 +13,8 @@
 
 <ion-item lines="none">
   <ion-label position="stacked">To</ion-label>
-  <ion-input (ionInput)="updateSearch('destination')" placeholder="Destination" [(ngModel)]="model.destination"
-    name="Destination">
+  <ion-input (ionInput)="updateSearch('destination')" placeholder="Destination" [value]="destinationPlaceName"
+    [(ngModel)]="model.destination" name="Destination">
   </ion-input>
 </ion-item>
 

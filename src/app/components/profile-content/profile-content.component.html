@@ -1,24 +1,42 @@
-<ion-card class="profile-card">
-  <ion-img src="../../../assets/car.png"></ion-img>
+<ion-card color="primary" class="profile-card">
+  <ion-card-header>
+    <ion-card-title color="dark">Welcome /Username Here/</ion-card-title>
+    <ion-card-subtitle color="secondary">You have {{ carSharesUserOwns?.length }} active car shares</ion-card-subtitle>
+  </ion-card-header>
 </ion-card>
-
 
 <ion-list>
   <ion-list-header>
     <ion-text>Your car shares</ion-text>
   </ion-list-header>
 
-  <ion-card *ngFor="let carShare of carSharesUserOwns">
+  <ion-card color="primary" *ngFor="let carShare of carSharesUserOwns">
     <ion-card-header>
-      <ion-card-title>{{ carShare.origin.coordinates | placeName | async }} to
+      <ion-card-title color="dark">{{ carShare.origin.coordinates | placeName | async }} to
         {{ carShare.destination.coordinates | placeName | async }}</ion-card-title>
-      <ion-card-subtitle>Passengers 2/{{ carShare.carInformation.passengers }}</ion-card-subtitle>
-      <ion-card-subtitle>Car {{ carShare.carInformation.make }}</ion-card-subtitle>
+      <ion-card-subtitle color="secondary">Passengers 2/{{ carShare.carInformation.passengers }}</ion-card-subtitle>
+      <ion-card-subtitle color="secondary">Car {{ carShare.carInformation.make }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-button expand="block" fill="outline" shape="round">
-        Edit car share
-        <ion-icon slot="end" name="create"></ion-icon>
+      <ion-button expand="block" color="secondary" fill="solid" shape="round" (click)="updateCarShare(carShare)">
+        Update car share
+        <ion-icon slot="end" name="color-wand"></ion-icon>
+      </ion-button>
+      <ion-button expand="block" fill="clear" color="light" (click)="startCarShare(carShare)">
+        Start car share
+        <ion-icon slot="end" name="happy"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="secondary" *ngIf="userDoesntOwnAnyCarShares()">
+    <ion-card-header>
+      <ion-card-title color="dark">You haven't created any car shares! 😮</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" color="light" fill="solid" shape="round">
+        Become an ICarShare driver
+        <ion-icon slot="end" name="arrow-dropright"></ion-icon>
       </ion-button>
     </ion-card-content>
   </ion-card>
@@ -29,16 +47,27 @@
     <ion-text>Upcoming trips</ion-text>
   </ion-list-header>
 
-  <ion-card *ngFor="let booking of carSharesUserIsBookedOnto">
+  <ion-card color="primary" *ngFor="let booking of carSharesUserIsBookedOnto">
     <ion-card-header>
-      <ion-card-title>{{ booking.carShareId }}</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
-      <ion-card-subtitle></ion-card-subtitle>
+      <ion-card-title color="dark">{{ booking.carShareInformation.origin.coordinates | placeName | async }} to
+        {{ booking.carShareInformation.destination.coordinates | placeName | async }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-button expand="block" fill="outline" shape="round">
+      <ion-button expand="block" color="secondary" fill="solid" shape="round" (click)="cancelBooking(booking)">
         Cancel booking
-        <ion-icon slot="end" name="create"></ion-icon>
+        <ion-icon slot="end" name="close-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="secondary" *ngIf="userIsNotBookedOntoAnyCarShares()">
+    <ion-card-header>
+      <ion-card-title color="dark">You haven't booked onto any car shares! 😮</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" color="light" fill="solid" shape="round">
+        Find car shares in my area
+        <ion-icon slot="end" name="pin"></ion-icon>
       </ion-button>
     </ion-card-content>
   </ion-card>

@@ -1,4 +1,4 @@
-declare var google: any;
+declare const google: any;
 
 import { Component, Input } from '@angular/core';
 
@@ -22,7 +22,9 @@ export class SearchComponent {
     }
   };
 
-  @Input() model: any;
+  @Input() model: { origin: string, destination: string };
+  @Input() originPlaceName: string;
+  @Input() destinationPlaceName: string;
 
   constructor() {
     this.autoCompleteService = new google.maps.places.AutocompleteService();
@@ -33,21 +35,27 @@ export class SearchComponent {
     this.predictiveLists[direction].show = false;
   }
 
+  private setupPredictionConfig(direction: string) {
+    return {
+      input: this.model[direction],
+      componentRestrictions: {
+        country: 'uk'
+      }
+    };
+  }
+
   updateSearch(direction: string) {
     this.predictiveLists[direction].show = true;
     if (this.model[direction].length > 0) {
-      this.autoCompleteService.getPlacePredictions({
-        input: this.model[direction],
-        componentRestrictions: {
-          country: 'uk'
-        }
-      }, (predictions: string[], status: string) => {
-        if (status !== google.maps.places.PlacesServiceStatus.OK) {
-          return;
-        }
+      this.autoCompleteService.getPlacePredictions(
+        this.setupPredictionConfig(direction),
+        (predictions: string[], status: string) => {
+          if (status !== google.maps.places.PlacesServiceStatus.OK) {
+            return;
+          }
 
-        this.predictiveLists[direction].predictions = predictions;
-      });
+          this.predictiveLists[direction].predictions = predictions;
+        });
     }
   }
 }

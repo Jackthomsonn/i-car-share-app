@@ -7,7 +7,6 @@
     border-radius: 0;
     box-shadow: none;
     padding: 24px;
-    background: var(--ion-color-secondary);
   }
 }
 
@@ -32,3 +31,6 @@
   }
 }
 
+.light-text {
+  color: var(--ion-color-light);
+}

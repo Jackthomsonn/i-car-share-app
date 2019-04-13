@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { from, Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { StorageKeys } from 'src/app/enums/storage.enum';
 import { ErrorProvider } from 'src/app/providers/error/error.provider';
 import { AuthenticationProvider } from '../../providers/authentication/authentication.provider';
 import { LoadingProvider } from './../../providers/loading/loading.provider';
-import { StorageKeys } from 'src/app/enums/storage.enum';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -53,7 +53,7 @@ export class TokenInterceptor implements HttpInterceptor {
         const token = await this.authenticationProvider.getToken();
 
         return this.authenticationProvider.getRefreshToken(token).pipe(switchMap(async (response: { accessToken: string }) => {
-          await this.storage.set('hitch-hike-share', response.accessToken);
+          await this.storage.set(StorageKeys.ACCESS_TOKEN, response.accessToken);
           request = request.clone({
             headers: new HttpHeaders({
               Authorization: `Bearer ${await this.authenticationProvider.getToken()}`

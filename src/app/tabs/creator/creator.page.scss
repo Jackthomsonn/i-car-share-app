@@ -1,9 +1,14 @@
 
-#hitch-hike-creator {
+#i-car-share-creator {
   display: flex;
   justify-content: center;
   width: 100vw;
   height: 100%;
+}
+
+ion-card.transparent {
+  --background: transparent;
+  box-shadow: none;
 }
 
 ion-card-content {

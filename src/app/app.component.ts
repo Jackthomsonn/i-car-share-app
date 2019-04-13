@@ -3,17 +3,21 @@ import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
+import { LoadingProvider } from './providers/loading/loading.provider';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
+  public isLoading: boolean;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private keyboard: Keyboard
+    private keyboard: Keyboard,
+    private loadingProvider: LoadingProvider
   ) {
     this.initializeApp();
   }
@@ -24,6 +28,10 @@ export class AppComponent {
       this.keyboard.hideFormAccessoryBar(false);
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+    });
+
+    this.loadingProvider.isLoading.subscribe(isLoading => {
+      this.isLoading = isLoading;
     });
   }
 }

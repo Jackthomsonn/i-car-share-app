@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ICarShare } from 'src/app/interfaces/ICarShare';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,11 @@ export class CarShareProvider {
     return this.http.get(`${this.uri}?ownerId=${userId}`);
   }
 
-  public createCarShare(carShare) {
+  public createCarShare(carShare: ICarShare) {
     return this.http.post(this.uri, carShare);
+  }
+
+  public updateCarShare(carShare: ICarShare) {
+    return this.http.put(`${this.uri}/${carShare._id}`, carShare);
   }
 }

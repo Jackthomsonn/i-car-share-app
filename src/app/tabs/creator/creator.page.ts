@@ -1,10 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Geocoder, GoogleMap } from '@ionic-native/google-maps';
 import { AlertController, ToastController } from '@ionic/angular';
+import { map } from 'rxjs/operators';
 import { ICarShare } from 'src/app/interfaces/ICarShare';
 import { ICar } from './../../interfaces/ICar';
+import { PlaceNamePipe } from './../../pipes/place-name/place-name.pipe';
 import { CarShareProvider } from './../../providers/car-share/car-share.provider';
 import { CarProvider } from './../../providers/car/car.provider';
+import { LoadingProvider } from './../../providers/loading/loading.provider';
+import { BaseComponent } from './../../shared/base/base.component';
+import { Days } from 'src/app/enums/days';
 
 @Component({
   selector: 'app-creator',
@@ -12,27 +18,40 @@ import { CarProvider } from './../../providers/car/car.provider';
   styleUrls: ['creator.page.scss']
 })
 
-export class CreatorPage implements OnInit {
+export class CreatorPage extends BaseComponent implements OnInit {
   public carShare: ICarShare;
   public map: GoogleMap;
   public availableCars: ICar[];
   public locations: { origin: string, destination: string };
   public availableDays: string[];
+  public isInUpdateMode: boolean;
+  public originPlaceName: string;
+  public destinationPlaceName: string;
+  public isSaving: boolean;
 
   constructor(
     private carProvider: CarProvider,
     private carShareProvider: CarShareProvider,
     private alertCtrl: AlertController,
-    private toastCtrl: ToastController) { }
+    private toastCtrl: ToastController,
+    private activatedRoute: ActivatedRoute,
+    private placeName: PlaceNamePipe,
+    private router: Router,
+    protected loadingProvider: LoadingProvider) {
+    super(loadingProvider);
+  }
 
-  public async createCarShare() {
+  public async manageCarShare() {
+    this.showLoader();
+    this.toggle('isSaving');
+
     const toast = await this.toastCtrl.create({
-      message: 'Creating car share..',
+      message: `${this.isInUpdateMode ? 'Updating' : 'Creating'} car share..`,
       color: 'dark'
     });
 
     const toastSuccess = await this.toastCtrl.create({
-      message: 'Car share created successfully',
+      message: `Car share ${this.isInUpdateMode ? 'updated' : 'created'} successfully`,
       color: 'dark',
       duration: 2000
     });
@@ -41,10 +60,14 @@ export class CreatorPage implements OnInit {
 
     try {
       await this.transformCoordinatesForLocation();
+      const methodToInvokeUponSaving = this.isInUpdateMode ? 'updateCarShare' : 'createCarShare';
 
-      this.carShareProvider.createCarShare(this.carShare).subscribe(() => {
+      this.carShareProvider[methodToInvokeUponSaving](this.carShare).subscribe(() => {
         toast.dismiss();
         toastSuccess.present();
+        this.router.navigate(['tabs/profile']);
+        this.hideLoader();
+        this.toggle('isSaving');
         this.carShare = this.setDefaultCarShareObject();
         this.locations = this.setDefaultLocationsObject();
       }, async (err) => {
@@ -58,6 +81,8 @@ export class CreatorPage implements OnInit {
 
           alert.present();
           toast.dismiss();
+          this.hideLoader();
+          this.toggle('isSaving');
         }
       });
     } catch (err) {
@@ -70,6 +95,8 @@ export class CreatorPage implements OnInit {
 
       alert.present();
       toast.dismiss();
+      this.hideLoader();
+      this.toggle('isSaving');
     }
   }
 
@@ -81,10 +108,16 @@ export class CreatorPage implements OnInit {
     return { header };
   }
 
+  private toggle(key: string) {
+    this[key] = !this[key];
+  }
+
   private async transformCoordinatesForLocation() {
     const originResults = await Geocoder.geocode({ address: this.locations.origin });
     const destinationResults = await Geocoder.geocode({ address: this.locations.destination });
 
+    this.carShare.origin.coordinates = [];
+    this.carShare.destination.coordinates = [];
     this.carShare.origin.coordinates.push(originResults[0].position.lng, originResults[0].position.lat);
 
     this.carShare.destination.coordinates.push(destinationResults[0].position.lng, destinationResults[0].position.lat);
@@ -92,8 +125,8 @@ export class CreatorPage implements OnInit {
 
   private setDefaultCarShareObject() {
     return {
-      carId: this.availableCars[0]._id,
-      price: 1,
+      ownerId: '',
+      carId: '',
       origin: {
         type: 'Point',
         coordinates: []
@@ -102,7 +135,8 @@ export class CreatorPage implements OnInit {
         type: 'Point',
         coordinates: []
       },
-      runningDays: ['Monday']
+      price: 1,
+      runningDays: [Days.MONDAY]
     };
   }
 
@@ -117,12 +151,54 @@ export class CreatorPage implements OnInit {
     };
   }
 
-  async ngOnInit() {
-    const carsThatBelongToUser: ICar[] = <ICar[]>await this.carProvider.getCarsThatBelongToUser();
+  private async setupExistingCarObject() {
+    this.carShare = {
+      ...this.carShare,
+      carId: this.carShare.carInformation._id,
+      runningDays: this.carShare.runningDays,
+      ownerId: this.carShare.ownerInformation._id
+    };
+  }
 
-    this.availableCars = carsThatBelongToUser;
-    this.carShare = this.setDefaultCarShareObject();
-    this.availableDays = this.setDefaultAvailableDaysObject();
-    this.locations = this.setDefaultLocationsObject();
+  private async instantiateCarShareDefaults() {
+    return new Promise(async (resolve) => {
+      this.carShare = this.setDefaultCarShareObject();
+      this.locations = this.setDefaultLocationsObject();
+
+      this.availableCars = <ICar[]>await this.carProvider.getCarsThatBelongToUser();
+      this.availableDays = this.setDefaultAvailableDaysObject();
+      this.carShare.carId = this.availableCars[0]._id;
+
+      resolve();
+    });
+  }
+
+  async ngOnInit() {
+    await this.instantiateCarShareDefaults();
+  }
+
+  ionViewWillEnter() {
+    this.activatedRoute.paramMap
+      .pipe(
+        map(() => window.history.state)
+      ).subscribe((data) => {
+        if (data && data.carShare) {
+          setTimeout(async () => {
+            this.isInUpdateMode = true;
+            this.carShare = data.carShare;
+
+            this.originPlaceName = <any>await this.placeName.transform(this.carShare.origin.coordinates);
+            this.destinationPlaceName = <any>await this.placeName.transform(this.carShare.destination.coordinates);
+
+            this.setupExistingCarObject();
+          }, 0);
+        }
+      });
+  }
+
+  ionViewWillLeave() {
+    this.originPlaceName = '';
+    this.destinationPlaceName = '';
+    this.isInUpdateMode = false;
   }
 }

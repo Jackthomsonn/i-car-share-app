@@ -1,18 +1,20 @@
 <ion-header>
   <ion-toolbar>
     <ion-title color="light">
-      Create a car share
+      {{ isInUpdateMode ? 'Update Your Car Share' :  'Create a car share' }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <form (ngSubmit)="createCarShare()">
-    <ion-card style="background: transparent; box-shadow: none">
-      <ion-text style="font-weight: 900; font-size: 24px">Create a car share</ion-text>
+<ion-content *ngIf="carShare">
+  <form (ngSubmit)="manageCarShare()">
+    <ion-card class="transparent">
+      <ion-text style="font-weight: 900; font-size: 24px">
+        {{ isInUpdateMode ? 'Update Your Car Share' :  'Create a car share' }}
+      </ion-text>
     </ion-card>
 
-    <ion-card style="background: transparent; box-shadow: none">
+    <ion-card class="transparent">
       <div class="step-row">
         <div class="circle">
           1
@@ -26,11 +28,12 @@
         <ion-card-subtitle>Where are you starting from and heading too?</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <app-search [model]="locations"></app-search>
+        <app-search [model]="locations" [originPlaceName]="originPlaceName"
+          [destinationPlaceName]="destinationPlaceName"></app-search>
       </ion-card-content>
     </ion-card>
 
-    <ion-card style="background: transparent; box-shadow: none">
+    <ion-card class="transparent">
       <div class="step-row">
         <div class="circle">
           2
@@ -48,10 +51,9 @@
           <ion-list-header>Select a car</ion-list-header>
 
           <ion-item lines="none">
-            <ion-select mode="md" *ngIf="carShare?.carId"
-              [interfaceOptions]="setCustomInterfaceOptions('Your available cars')" [(ngModel)]="carShare.carId"
-              name="Car">
-              <ion-select-option *ngFor="let availableCar of availableCars" [selected]="carShare?.carId"
+            <ion-select mode="md" [interfaceOptions]="setCustomInterfaceOptions('Your available cars')"
+              [(ngModel)]="carShare.carId" name="Car">
+              <ion-select-option *ngFor="let availableCar of availableCars" [selected]="carShare.carId"
                 [value]="availableCar._id">
                 {{ availableCar.make }}</ion-select-option>
             </ion-select>
@@ -61,7 +63,7 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-card style="background: transparent; box-shadow: none">
+    <ion-card class="transparent">
       <div class="step-row">
         <div class="circle">
           3
@@ -80,7 +82,7 @@
 
           <ion-item lines="none">
             <ion-label position="fixed">£</ion-label>
-            <ion-input [(ngModel)]="carShare.price" type="number" [value]="carShare?.price" name="Price">
+            <ion-input [(ngModel)]="carShare.price" type="number" [value]="carShare.price" name="Price">
             </ion-input>
           </ion-item>
 
@@ -88,7 +90,7 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-card style="background: transparent; box-shadow: none">
+    <ion-card class="transparent">
       <div class="step-row">
         <div class="circle">
           4
@@ -106,10 +108,10 @@
           <ion-list-header>Select your available days</ion-list-header>
 
           <ion-item lines="none">
-            <ion-select multiple mode="md" *ngIf="carShare?.runningDays"
+            <ion-select multiple mode="md" *ngIf="carShare.runningDays"
               [interfaceOptions]="setCustomInterfaceOptions('Choose available days')" [(ngModel)]="carShare.runningDays"
               name="Running Days">
-              <ion-select-option *ngFor="let day of availableDays" [selected]="carShare?.runningDays" [value]="day">
+              <ion-select-option *ngFor="let day of availableDays" [selected]="carShare.runningDays" [value]="day">
                 {{ day }}
               </ion-select-option>
             </ion-select>
@@ -120,9 +122,16 @@
     </ion-card>
 
     <div class="buttons-container">
-      <ion-button expand="block" fill="outline" shape="round" type="submit">
+      <ion-button [disabled]="isSaving" *ngIf="!isInUpdateMode" expand="block" fill="outline" shape="round"
+        type="submit">
         Create Car Share
-        <ion-icon slot="end" name="rocket"></ion-icon>
+        <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button [disabled]="isSaving" *ngIf="isInUpdateMode" expand="block" fill="outline" shape="round"
+        type="submit">
+        Update Car Share
+        <ion-icon slot="end" name="color-wand"></ion-icon>
       </ion-button>
     </div>
   </form>

@@ -4,14 +4,14 @@
       {{ username }}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button>
+      <ion-button (click)="logout()">
         <ion-icon slot="icon-only" color="light" name="cog"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="carSharesUserOwns && carSharesUserIsBookedOnto">
   <app-profile-content [carSharesUserOwns]="carSharesUserOwns" [carSharesUserIsBookedOnto]="carSharesUserIsBookedOnto">
   </app-profile-content>
 </ion-content>

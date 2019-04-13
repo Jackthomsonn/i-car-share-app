@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="light">Tracker</ion-title>
+
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<div id="map_canvas"></div>
+
+<div class="info-container">
+  <div class="info-box">
+    <p *ngIf="passengerCount !== stopsReached">Picked up {{ stopsReached }} of {{ passengerCount }} passengers</p>
+
+    <p *ngIf="passengerCount === stopsReached">The journey begins</p>
+  </div>
+</div>

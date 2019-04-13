@@ -1,4 +1,4 @@
 export enum StorageKeys {
-  ACCESS_TOKEN = 'hitch-hike-share',
+  ACCESS_TOKEN = 'i-car-share',
   USER_ID = 'userId'
 }

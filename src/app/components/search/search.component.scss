@@ -1,5 +1,5 @@
 ion-item {
-  background: #FFF;
+  background: var(--ion-color-light);
 
   &:first-of-type {
     border-top-left-radius: 5px;

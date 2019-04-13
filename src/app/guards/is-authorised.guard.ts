@@ -13,20 +13,28 @@ export class IsAuthorised implements CanActivate {
     private router: Router,
     private storage: Storage) { }
 
-  async canActivate() {
+  private async performAuthorisationCheck() {
+    const userId = await this.storage.get(StorageKeys.USER_ID);
+    const user = await this.userProvider.getUserInformation(userId).toPromise();
+
+    this.userProvider.userInformation.next(user);
+    this.authenticationProvider.isAuthenticated.next(true);
+
+    return true;
+  }
+
+  private handleUnauthorisedAccess() {
+    this.router.navigate(['login']);
+    this.authenticationProvider.isAuthenticated.next(false);
+
+    return false;
+  }
+
+  canActivate() {
     try {
-      const userId = await this.storage.get(StorageKeys.USER_ID);
-      const user = await this.userProvider.getUserInformation(userId).toPromise();
-
-      this.userProvider.userInformation.next(user);
-      this.authenticationProvider.isAuthenticated.next(true);
-
-      return true;
-    } catch {
-      this.router.navigate(['login']);
-      this.authenticationProvider.isAuthenticated.next(false);
-
-      return false;
+      return this.performAuthorisationCheck();
+    } catch (error) {
+      return this.handleUnauthorisedAccess();
     }
   }
 }

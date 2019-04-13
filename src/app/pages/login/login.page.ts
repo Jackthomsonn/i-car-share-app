@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+import { StorageKeys } from 'src/app/enums/storage.enum';
 import { IUser } from 'src/app/interfaces/IUser';
 import { AuthenticationProvider } from 'src/app/providers/authentication/authentication.provider';
 
@@ -17,8 +18,8 @@ export class LoginPage implements OnInit {
 
   public login() {
     this.authProvider.login(this.user).subscribe(async (response: { accessToken: string, userId: string }) => {
-      await this.storage.set('hitch-hike-share', response.accessToken);
-      await this.storage.set('userId', response.userId);
+      await this.storage.set(StorageKeys.ACCESS_TOKEN, response.accessToken);
+      await this.storage.set(StorageKeys.USER_ID, response.userId);
 
       this.router.navigate(['tabs/feed']);
     });
@@ -27,7 +28,9 @@ export class LoginPage implements OnInit {
   private setupDefaultUserObject() {
     return {
       username: '',
-      password: ''
+      password: '',
+      email: '',
+      phoneNumber: undefined
     };
   }
 

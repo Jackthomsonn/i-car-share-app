@@ -16,7 +16,6 @@ export class PlaceNamePipe implements PipeTransform {
     return this.nativeGeocoder.reverseGeocode(value[1], value[0], options)
       .then((result: NativeGeocoderReverseResult[]) => {
         return `${result[0].thoroughfare}`;
-      })
-      .catch((error: any) => console.log(error));
+      });
   }
 }

@@ -4,7 +4,8 @@ import { IsAuthorised } from './guards/is-authorised.guard';
 
 const routes: Routes = [
   { path: '', loadChildren: './tabs/tabs.module#TabsPageModule', canActivate: [IsAuthorised] },
-  { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' }
+  { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' },
+  { path: 'tracker', loadChildren: './pages/tracker/tracker.module#TrackerPageModule' }
 ];
 
 @NgModule({

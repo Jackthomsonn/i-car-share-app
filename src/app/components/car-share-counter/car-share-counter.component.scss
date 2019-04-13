@@ -17,12 +17,12 @@
     margin-bottom: 18px;
     font-size: 32px;
     font-weight: 700;
-    color: #FFF;
+    color: var(--ion-color-light);
   }
 
   & > .counter-text {
     white-space: normal;
     font-size: 14px;
-    color: #FFF;
+    color: var(--ion-color-light);
   }
 }

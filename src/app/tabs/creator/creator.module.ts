@@ -1,3 +1,4 @@
+import { PlaceNamePipe } from './../../pipes/place-name/place-name.pipe';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ import { CreatorPage } from './creator.page';
     ComponentsModule,
     RouterModule.forChild([{ path: '', component: CreatorPage }])
   ],
+  providers: [PlaceNamePipe],
   declarations: [CreatorPage]
 })
 

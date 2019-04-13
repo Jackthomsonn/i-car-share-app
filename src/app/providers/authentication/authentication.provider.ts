@@ -58,4 +58,8 @@ export class AuthenticationProvider {
   public getRefreshToken = (token: string) => {
     return this.http.post('http://192.168.0.32:8080/auth/refreshtoken', { token: token });
   }
+
+  public registerPushToken = (registrationId: string) => {
+    return this.http.post('http://192.168.0.32:8080/push-registration', { registrationId });
+  }
 }

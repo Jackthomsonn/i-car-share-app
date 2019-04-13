@@ -1,0 +1,23 @@
+#map_canvas {
+  height: 82%;
+}
+
+.info-container {
+  background: transparent;
+
+  .info-box {
+    background: #FFF;
+    height: 115px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 1px 1px 20px #CCC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -48px;
+    
+    p {
+      color: var(--ion-color-primary);
+    }
+  }
+}

@@ -6,8 +6,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card class="counter-card">
+<ion-content *ngIf="availableCarShares && availableCarShares.length > 0">
+  <ion-card color="secondary" class="counter-card">
     <app-car-share-counter [availableCarShares]="availableCarShares?.length"></app-car-share-counter>
   </ion-card>
 
@@ -20,10 +20,10 @@
     </ion-buttons>
     <ion-card-header>
       <ion-card-subtitle color="secondary">Get Started</ion-card-subtitle>
-      <ion-card-title>What is Hitch Hike?</ion-card-title>
+      <ion-card-title>What is ICarShare?</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p>Hitch Hike is a brand new way of keeping the environment clean and keeping the travel costs down by sharing
+      <p>ICarShare is a brand new way of keeping the environment clean and keeping the travel costs down by sharing
         lifts with friends or complete strangers!</p>
     </ion-card-content>
   </ion-card>
@@ -33,20 +33,43 @@
       <ion-text>Car shares in your area</ion-text>
     </ion-list-header>
 
-    <ion-card *ngFor="let carShare of availableCarShares">
+    <ion-card color="primary" *ngFor="let carShare of availableCarShares">
       <ion-card-header>
-        <ion-card-title>{{ carShare.origin.coordinates | placeName | async }} to
+        <ion-card-title color="dark">{{ carShare.origin.coordinates | placeName | async }} to
           {{ carShare.destination.coordinates | placeName | async }}
         </ion-card-title>
-        <ion-card-subtitle>{{ carShare.ownerInformation.username }} - Posted {{ carShare.createdAt | durationPipe }}
+        <ion-card-subtitle color="secondary">{{ carShare.ownerInformation.username }} - Posted
+          {{ carShare.createdAt | durationPipe }}
         </ion-card-subtitle>
-        <ion-card-subtitle>{{ carShare.distance.calculatedDistance | metresToMiles }} miles away</ion-card-subtitle>
-        <ion-card-subtitle>Price - {{ carShare.price | currency: '£' }}</ion-card-subtitle>
+        <ion-card-subtitle color="secondary">{{ carShare.distance.calculatedDistance | metresToMiles }} miles away
+        </ion-card-subtitle>
+        <ion-card-subtitle color="secondary">Price - {{ carShare.price | currency: '£' }}</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-button expand="block" fill="outline" shape="round">
+        <ion-button [hidden]="carShare['isBooked']" expand="block" color="secondary" fill="solid" shape="round"
+          (click)="bookCarShare(carShare)">
           Book this car share!
-          <ion-icon slot="end" name="rocket"></ion-icon>
+          <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button [hidden]="!carShare['isBooked']" expand="block" color="secondary" fill="solid" shape="round"
+          (click)="cancelBooking(carShare)">
+          Cancel your booking
+          <ion-icon slot="end" name="close-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button expand="block" class="light-text" fill="transparent">
+          Contact owner
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card color="secondary" *ngIf="availableCarShares.length === 0">
+      <ion-card-header>
+        <ion-card-title color="dark">It looks like there are no available car shares in your area 😢</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="block" color="light" fill="solid" shape="round">
+          Notify me
+          <ion-icon slot="end" name="notifications-outline"></ion-icon>
         </ion-button>
       </ion-card-content>
     </ion-card>

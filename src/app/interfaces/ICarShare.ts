@@ -1,18 +1,21 @@
-import { ICar } from './ICar';
+import { Days } from './../enums/days';
+import { ICarInformation } from './ICarInformation';
 import { ICoordinates } from './ICoordinates';
-import { IOwner } from './IOwner';
+import { IOwnerInformation } from './IOwnerInformation';
+import { IDistance } from './IDistance';
 
 export interface ICarShare {
+  _id?: string;
+  ownerId: string;
   carId: string;
-  price: number;
   origin: ICoordinates;
   destination: ICoordinates;
+  price: number;
+  runningDays: Days[];
+  bookingId?: string;
   createdAt?: string;
-  carInformation?: ICar;
-  ownerInformation?: IOwner;
-  runningDays: string[];
-  distance?: {
-    calculatedDistance: number,
-    location: ICoordinates
-  };
+  updatedAt?: string;
+  distance?: IDistance;
+  carInformation?: ICarInformation;
+  ownerInformation?: IOwnerInformation;
 }
