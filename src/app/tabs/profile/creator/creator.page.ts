@@ -3,14 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Geocoder, GoogleMap } from '@ionic-native/google-maps';
 import { AlertController, ToastController } from '@ionic/angular';
 import { map } from 'rxjs/operators';
-import { ICarShare } from 'src/app/interfaces/ICarShare';
-import { ICar } from './../../interfaces/ICar';
-import { PlaceNamePipe } from './../../pipes/place-name/place-name.pipe';
-import { CarShareProvider } from './../../providers/car-share/car-share.provider';
-import { CarProvider } from './../../providers/car/car.provider';
-import { LoadingProvider } from './../../providers/loading/loading.provider';
-import { BaseComponent } from './../../shared/base/base.component';
 import { Days } from 'src/app/enums/days';
+import { ICarShare } from 'src/app/interfaces/ICarShare';
+import { ICar } from '../../../interfaces/ICar';
+import { PlaceNamePipe } from '../../../pipes/place-name/place-name.pipe';
+import { CarShareProvider } from '../../../providers/car-share/car-share.provider';
+import { CarProvider } from '../../../providers/car/car.provider';
+import { LoadingProvider } from '../../../providers/loading/loading.provider';
+import { BaseComponent } from '../../../shared/base/base.component';
 
 @Component({
   selector: 'app-creator',
@@ -65,7 +65,7 @@ export class CreatorPage extends BaseComponent implements OnInit {
       this.carShareProvider[methodToInvokeUponSaving](this.carShare).subscribe(() => {
         toast.dismiss();
         toastSuccess.present();
-        this.router.navigate(['tabs/profile']);
+        this.router.navigate(['tabs/profile'], { state: { forceRefresh: true } });
         this.hideLoader();
         this.toggle('isSaving');
         this.carShare = this.setDefaultCarShareObject();
@@ -141,7 +141,7 @@ export class CreatorPage extends BaseComponent implements OnInit {
   }
 
   private setDefaultAvailableDaysObject() {
-    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    return [Days.MONDAY, Days.TUESDAY, Days.WEDNESDAY, Days.THURSDAY, Days.FRIDAY, Days.SATURDAY, Days.SUNDAY];
   }
 
   private setDefaultLocationsObject() {
@@ -181,22 +181,20 @@ export class CreatorPage extends BaseComponent implements OnInit {
     this.activatedRoute.paramMap
       .pipe(
         map(() => window.history.state)
-      ).subscribe((data) => {
+      ).subscribe(async (data) => {
         if (data && data.carShare) {
-          setTimeout(async () => {
-            this.isInUpdateMode = true;
-            this.carShare = data.carShare;
+          this.isInUpdateMode = true;
+          this.carShare = data.carShare;
 
-            this.originPlaceName = <any>await this.placeName.transform(this.carShare.origin.coordinates);
-            this.destinationPlaceName = <any>await this.placeName.transform(this.carShare.destination.coordinates);
+          this.originPlaceName = <any>await this.placeName.transform(this.carShare.origin.coordinates);
+          this.destinationPlaceName = <any>await this.placeName.transform(this.carShare.destination.coordinates);
 
-            this.setupExistingCarObject();
-          }, 0);
+          this.setupExistingCarObject();
         }
       });
   }
 
-  ionViewWillLeave() {
+  ionViewDidLeave() {
     this.originPlaceName = '';
     this.destinationPlaceName = '';
     this.isInUpdateMode = false;

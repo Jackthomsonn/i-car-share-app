@@ -6,25 +6,27 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="availableCarShares && availableCarShares.length > 0">
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="getRefreshedData($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+
   <ion-card color="secondary" class="counter-card">
     <app-car-share-counter [availableCarShares]="availableCarShares?.length"></app-car-share-counter>
   </ion-card>
 
   <ion-card class="welcome-card">
     <ion-img src="/assets/car.png"></ion-img>
-    <ion-buttons>
-      <ion-button color="secondary">
-        <ion-icon slot="start" name="close-circle"></ion-icon>
-      </ion-button>
-    </ion-buttons>
     <ion-card-header>
       <ion-card-subtitle color="secondary">Get Started</ion-card-subtitle>
       <ion-card-title>What is ICarShare?</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p>ICarShare is a brand new way of keeping the environment clean and keeping the travel costs down by sharing
-        lifts with friends or complete strangers!</p>
+      <p>ICarShare is a new way to travel that helps both the planet and you save money and keep the world healthy! By
+        sharing lifts with friends (or complete strangers), you have a chance to earn some money and save the planet at
+        the same time!</p>
     </ion-card-content>
   </ion-card>
 
@@ -46,8 +48,8 @@
         <ion-card-subtitle color="secondary">Price - {{ carShare.price | currency: '£' }}</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-button [hidden]="carShare['isBooked']" expand="block" color="secondary" fill="solid" shape="round"
-          (click)="bookCarShare(carShare)">
+        <ion-button [disabled]="carShare.ownerInformation._id === userId" [hidden]="carShare['isBooked']" expand="block"
+          color="secondary" fill="solid" shape="round" (click)="bookCarShare(carShare)">
           Book this car share!
           <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
         </ion-button>

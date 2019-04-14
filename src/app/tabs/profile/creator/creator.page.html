@@ -3,6 +3,10 @@
     <ion-title color="light">
       {{ isInUpdateMode ? 'Update Your Car Share' :  'Create a car share' }}
     </ion-title>
+
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -105,13 +109,13 @@
       </ion-card-header>
       <ion-card-content>
         <ion-list>
-          <ion-list-header>Select your available days</ion-list-header>
+          <ion-list-header>{{ carShare.runningDays }}</ion-list-header>
 
           <ion-item lines="none">
             <ion-select multiple mode="md" *ngIf="carShare.runningDays"
               [interfaceOptions]="setCustomInterfaceOptions('Choose available days')" [(ngModel)]="carShare.runningDays"
               name="Running Days">
-              <ion-select-option *ngFor="let day of availableDays" [selected]="carShare.runningDays" [value]="day">
+              <ion-select-option *ngFor="let day of availableDays" [value]="day">
                 {{ day }}
               </ion-select-option>
             </ion-select>

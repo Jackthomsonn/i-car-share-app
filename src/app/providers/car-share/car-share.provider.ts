@@ -33,4 +33,8 @@ export class CarShareProvider {
   public updateCarShare(carShare: ICarShare) {
     return this.http.put(`${this.uri}/${carShare._id}`, carShare);
   }
+
+  public deleteCarShare(carShare: ICarShare) {
+    return this.http.delete(`${this.uri}/${carShare._id}`);
+  }
 }

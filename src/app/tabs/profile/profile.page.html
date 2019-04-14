@@ -12,6 +12,7 @@
 </ion-header>
 
 <ion-content *ngIf="carSharesUserOwns && carSharesUserIsBookedOnto">
-  <app-profile-content [carSharesUserOwns]="carSharesUserOwns" [carSharesUserIsBookedOnto]="carSharesUserIsBookedOnto">
+  <app-profile-content [refreshedData]="refreshedData" [carSharesUserOwns]="carSharesUserOwns"
+    [carSharesUserIsBookedOnto]="carSharesUserIsBookedOnto" (refreshData)="refreshData()">
   </app-profile-content>
 </ion-content>

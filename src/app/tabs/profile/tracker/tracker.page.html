@@ -12,8 +12,14 @@
 
 <div class="info-container">
   <div class="info-box">
-    <p *ngIf="passengerCount !== stopsReached">Picked up {{ stopsReached }} of {{ passengerCount }} passengers</p>
+    <div class="col">
+      <h2>Passengers picked up</h2>
+      <p>{{ stopsReached }}</p>
+    </div>
 
-    <p *ngIf="passengerCount === stopsReached">The journey begins</p>
+    <div class="col">
+      <h2>Total Passengers</h2>
+      <p>{{ passengerCount }}</p>
+    </div>
   </div>
 </div>

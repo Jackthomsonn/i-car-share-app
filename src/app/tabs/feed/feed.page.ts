@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Storage } from '@ionic/storage';
 import { StorageKeys } from 'src/app/enums/storage.enum';
@@ -17,8 +17,9 @@ import { BaseComponent } from './../../shared/base/base.component';
   styleUrls: ['feed.page.scss']
 })
 
-export class FeedPage extends BaseComponent {
+export class FeedPage extends BaseComponent implements OnInit {
   public availableCarShares: ICarShare[];
+  public userId: string;
 
   constructor(
     private carShareProvider: CarShareProvider,
@@ -51,8 +52,14 @@ export class FeedPage extends BaseComponent {
     });
   }
 
+  public async getRefreshedData(event: any) {
+    await this.getCarSharesInUsersGeoArea();
+    event.target.complete();
+  }
+
   private determineIfUserIsBookedOntoCarShare(userId: string) {
     this.bookingProvider.getCarSharesUserIsBookedOnto(userId).subscribe((bookings: IBooking[]) => {
+      console.log(bookings);
       this.availableCarShares.forEach(carShare => {
         bookings.forEach(booking => {
           if (booking.carShareId === carShare._id) {
@@ -67,26 +74,32 @@ export class FeedPage extends BaseComponent {
   }
 
   private async getCarSharesInUsersGeoArea() {
-    this.showLoader();
+    return new Promise(async (resolve) => {
+      this.showLoader();
 
-    const userId = await this.storage.get(StorageKeys.USER_ID);
-    const position = await this.location.getCurrentPosition();
+      const userId = await this.storage.get(StorageKeys.USER_ID);
+      const position = await this.location.getCurrentPosition();
 
-    this.carShareProvider
-      .getCarSharesInUsersGeoArea(position.coords.longitude, position.coords.latitude)
-      .subscribe((carShares: ICarShare[]) => {
-        this.availableCarShares = carShares;
+      this.userId = userId;
 
-        this.locationProvider.setPickupLocation({
-          userId: userId,
-          location: {
-            type: 'Point',
-            coordinates: [position.coords.longitude.toString(), position.coords.latitude.toString()]
-          }
-        }).subscribe();
+      this.carShareProvider
+        .getCarSharesInUsersGeoArea(position.coords.longitude, position.coords.latitude)
+        .subscribe((carShares: ICarShare[]) => {
+          this.availableCarShares = carShares;
 
-        this.determineIfUserIsBookedOntoCarShare(userId);
-      });
+          resolve();
+
+          this.locationProvider.setPickupLocation({
+            userId: userId,
+            location: {
+              type: 'Point',
+              coordinates: [position.coords.longitude.toString(), position.coords.latitude.toString()]
+            }
+          }).subscribe();
+
+          this.determineIfUserIsBookedOntoCarShare(userId);
+        });
+    });
   }
 
   // private setupPushNotifications() {
@@ -124,7 +137,7 @@ export class FeedPage extends BaseComponent {
   //   pushObject.on('error').subscribe(error => alert('Error with Push plugin'));
   // }
 
-  async ionViewWillEnter() {
+  ngOnInit() {
     this.getCarSharesInUsersGeoArea();
 
     // this.setupPushNotifications();

@@ -1,6 +1,11 @@
+<ion-refresher slot="fixed" (ionRefresh)="getRefreshedData($event)">
+  <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="crescent">
+  </ion-refresher-content>
+</ion-refresher>
+
 <ion-card color="primary" class="profile-card">
   <ion-card-header>
-    <ion-card-title color="dark">Welcome /Username Here/</ion-card-title>
+    <ion-card-title color="dark">Welcome {{ username }}</ion-card-title>
     <ion-card-subtitle color="secondary">You have {{ carSharesUserOwns?.length }} active car shares</ion-card-subtitle>
   </ion-card-header>
 </ion-card>
@@ -11,7 +16,13 @@
   </ion-list-header>
 
   <ion-card color="primary" *ngFor="let carShare of carSharesUserOwns">
-    <ion-card-header>
+    <ion-buttons>
+      <ion-button color="secondary" (click)="deleteCarShare(carShare)">
+        <ion-icon slot="start" name="close-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-card-header class="buttons">
       <ion-card-title color="dark">{{ carShare.origin.coordinates | placeName | async }} to
         {{ carShare.destination.coordinates | placeName | async }}</ion-card-title>
       <ion-card-subtitle color="secondary">Passengers 2/{{ carShare.carInformation.passengers }}</ion-card-subtitle>
@@ -29,13 +40,25 @@
     </ion-card-content>
   </ion-card>
 
+  <ion-card color="secondary" *ngIf="carSharesUserOwns.length > 0">
+    <ion-card-header>
+      <ion-card-title color="dark">Create another car share 😀</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" color="light" fill="solid" shape="round" (click)="goToCreator()">
+        Create a new car share
+        <ion-icon slot="end" name="arrow-dropright"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
   <ion-card color="secondary" *ngIf="userDoesntOwnAnyCarShares()">
     <ion-card-header>
       <ion-card-title color="dark">You haven't created any car shares! 😮</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-button expand="block" color="light" fill="solid" shape="round">
-        Become an ICarShare driver
+      <ion-button expand="block" color="light" fill="solid" shape="round" (click)="goToCreator()">
+        Create your first car share
         <ion-icon slot="end" name="arrow-dropright"></ion-icon>
       </ion-button>
     </ion-card-content>
@@ -65,7 +88,7 @@
       <ion-card-title color="dark">You haven't booked onto any car shares! 😮</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-button expand="block" color="light" fill="solid" shape="round">
+      <ion-button expand="block" color="light" fill="solid" shape="round" (click)="goToFeedPage()">
         Find car shares in my area
         <ion-icon slot="end" name="pin"></ion-icon>
       </ion-button>
