@@ -1,6 +1,6 @@
 .profile-card {
   min-height: 10vh;
-  margin-top: 50px;
+  margin-top: 48px;
 }
 
 ion-card {
@@ -8,9 +8,5 @@ ion-card {
     position: absolute;
     top: 8px;
     right: 0;
-  }
-
-  & > ion-card-header.buttons {
-    margin-top: 24px;
   }
 }

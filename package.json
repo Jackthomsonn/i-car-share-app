@@ -1,8 +1,8 @@
 {
   "name": "i-car-share-app",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "ICarShare Ltd",
+  "homepage": "https://icarshare.com/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,6 +11,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
+  "repository": "https://github.com/Jackthomsonn/i-car-share-app",
   "private": true,
   "dependencies": {
     "@angular/animations": "^7.2.11",

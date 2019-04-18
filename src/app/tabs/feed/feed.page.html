@@ -64,7 +64,7 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-card color="secondary" *ngIf="availableCarShares.length === 0">
+    <ion-card color="secondary" *ngIf="availableCarShares && availableCarShares.length === 0">
       <ion-card-header>
         <ion-card-title color="dark">It looks like there are no available car shares in your area 😢</ion-card-title>
       </ion-card-header>

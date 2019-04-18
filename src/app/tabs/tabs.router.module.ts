@@ -17,15 +17,6 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'creator',
-        children: [
-          {
-            path: '',
-            loadChildren: './creator/creator.module#CreatorPageModule'
-          }
-        ]
-      },
-      {
         path: 'profile',
         children: [
           {

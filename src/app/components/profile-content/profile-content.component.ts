@@ -63,12 +63,10 @@ export class ProfileContentComponent implements OnInit {
   }
 
   public getRefreshedData(event: any) {
-    console.log('Refresh');
     const refreshSubscription = this.refreshedData.subscribe((newData: {
       carSharesUserOwns: ICarShare[],
       carSharesUserIsBookedOnto: IBooking[]
     }) => {
-      console.log('Complete');
       event.target.complete();
 
       this.carSharesUserOwns = newData.carSharesUserOwns;

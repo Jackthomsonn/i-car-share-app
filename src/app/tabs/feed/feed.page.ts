@@ -59,7 +59,6 @@ export class FeedPage extends BaseComponent implements OnInit {
 
   private determineIfUserIsBookedOntoCarShare(userId: string) {
     this.bookingProvider.getCarSharesUserIsBookedOnto(userId).subscribe((bookings: IBooking[]) => {
-      console.log(bookings);
       this.availableCarShares.forEach(carShare => {
         bookings.forEach(booking => {
           if (booking.carShareId === carShare._id) {

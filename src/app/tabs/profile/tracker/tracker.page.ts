@@ -26,7 +26,7 @@ export class TrackerPage implements OnDestroy {
   public mapIsReady: boolean;
 
   private locationPoints: any[];
-  private directionsService: any
+  private directionsService: any;
   private route: Polyline;
   private nextPassengerMarker: Marker;
   private currentUserMarkerIcon: string;
