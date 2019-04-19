@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ICarShare } from 'src/app/interfaces/ICarShare';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class CarShareProvider {
   private uri: string;
 
   constructor(private http: HttpClient) {
-    this.uri = 'http://192.168.0.32:8080/car-shares';
+    this.uri = `${environment.apiUri}/car-shares`;
   }
 
   public getCarShares() {

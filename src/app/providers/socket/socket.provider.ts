@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class SocketServiceProvider {
@@ -8,7 +9,7 @@ export class SocketServiceProvider {
   public socket: io;
 
   constructor() {
-    this.socketUri = 'http://192.168.0.32:8080';
+    this.socketUri = environment.apiUri;
     this.connectClientSocket();
   }
 

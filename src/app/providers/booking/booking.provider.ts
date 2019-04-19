@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IBooking } from 'src/app/interfaces/IBooking';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class BookingProvider {
   private uri: string;
 
   constructor(private http: HttpClient) {
-    this.uri = 'http://192.168.0.32:8080/bookings';
+    this.uri = `${environment.apiUri}/bookings`;
   }
 
   public getCarSharesUserIsBookedOnto(userId: string) {

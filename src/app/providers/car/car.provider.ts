@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { StorageKeys } from 'src/app/enums/storage.enum';
 import { UserProvider } from './../user/user.provider';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class CarProvider {
   private uri: string;
 
   constructor(private http: HttpClient, private storage: Storage, private userProvider: UserProvider) {
-    this.uri = 'http://192.168.0.32:8080/cars';
+    this.uri = `${environment.apiUri}/cars`;
   }
 
   public async getCarsThatBelongToUser() {

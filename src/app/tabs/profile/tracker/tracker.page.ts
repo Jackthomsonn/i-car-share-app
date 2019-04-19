@@ -47,8 +47,8 @@ export class TrackerPage implements OnDestroy {
     this.locationPoints = [];
     this.stopsReached = 0;
     this.passengerCount = 0;
-    this.currentUserMarkerIcon = 'http://192.168.0.32:8100/assets/marker-icons/me.png';
-    this.hostMarkerIcon = 'http://192.168.0.32:8100/assets/marker-icons/car.png';
+    this.currentUserMarkerIcon = '../../../../assets/marker-icons/me.png';
+    this.hostMarkerIcon = '../../../../assets/marker-icons/car.png';
   }
 
   private loadMap() {
@@ -121,7 +121,7 @@ export class TrackerPage implements OnDestroy {
           lng: finalDestinationLatLng[0]
         },
         icon: {
-          url: 'http://192.168.0.32:8100/assets/marker-icons/user.png',
+          url: '../../../../assets/marker-icons/user.png',
           size: {
             width: 32,
             height: 32
