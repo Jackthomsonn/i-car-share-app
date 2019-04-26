@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Geocoder, GoogleMap } from '@ionic-native/google-maps';
 import { AlertController, ToastController } from '@ionic/angular';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { Days } from 'src/app/enums/days';
 import { ICarShare } from 'src/app/interfaces/ICarShare';
 import { ICar } from '../../../interfaces/ICar';
 import { PlaceNamePipe } from '../../../pipes/place-name/place-name.pipe';
 import { CarShareProvider } from '../../../providers/car-share/car-share.provider';
 import { CarProvider } from '../../../providers/car/car.provider';
-import { LoadingProvider } from '../../../providers/loading/loading.provider';
 import { BaseComponent } from '../../../shared/base/base.component';
 
 @Component({
@@ -36,13 +35,11 @@ export class CreatorPage extends BaseComponent implements OnInit {
     private toastCtrl: ToastController,
     private activatedRoute: ActivatedRoute,
     private placeName: PlaceNamePipe,
-    private router: Router,
-    protected loadingProvider: LoadingProvider) {
-    super(loadingProvider);
+    private router: Router) {
+    super();
   }
 
   public async manageCarShare() {
-    this.showLoader();
     this.toggle('isSaving');
 
     const toast = await this.toastCtrl.create({
@@ -62,11 +59,10 @@ export class CreatorPage extends BaseComponent implements OnInit {
       await this.transformCoordinatesForLocation();
       const methodToInvokeUponSaving = this.isInUpdateMode ? 'updateCarShare' : 'createCarShare';
 
-      this.carShareProvider[methodToInvokeUponSaving](this.carShare).subscribe(() => {
+      this.carShareProvider[methodToInvokeUponSaving](this.carShare).pipe(takeUntil(this.destroyed)).subscribe(() => {
         toast.dismiss();
         toastSuccess.present();
         this.router.navigate(['tabs/profile'], { state: { forceRefresh: true } });
-        this.hideLoader();
         this.toggle('isSaving');
         this.carShare = this.setDefaultCarShareObject();
         this.locations = this.setDefaultLocationsObject();
@@ -81,7 +77,6 @@ export class CreatorPage extends BaseComponent implements OnInit {
 
           alert.present();
           toast.dismiss();
-          this.hideLoader();
           this.toggle('isSaving');
         }
       });
@@ -95,7 +90,6 @@ export class CreatorPage extends BaseComponent implements OnInit {
 
       alert.present();
       toast.dismiss();
-      this.hideLoader();
       this.toggle('isSaving');
     }
   }
@@ -178,9 +172,12 @@ export class CreatorPage extends BaseComponent implements OnInit {
   }
 
   ionViewWillEnter() {
+    document.querySelector('ion-tab-bar').style.display = 'none';
+
     this.activatedRoute.paramMap
       .pipe(
-        map(() => window.history.state)
+        map(() => window.history.state),
+        takeUntil(this.destroyed)
       ).subscribe(async (data) => {
         if (data && data.carShare) {
           this.isInUpdateMode = true;

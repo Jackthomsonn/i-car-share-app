@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="light">
+      Conversation with {{ recieverUsername }}
+    </ion-title>
+
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #content>
+  <ion-card *ngFor="let message of messages" [color]="determineColor(message)"
+    [style.margin-left]="determineMarginLeft(message)" [style.margin-right]="determineMarginRight(message)">
+    {{ message.message }}
+  </ion-card>
+</ion-content>
+
+<ion-footer>
+  <ion-input placeholder="Your message" [(ngModel)]="message"></ion-input>
+  <ion-button (click)="sendMessage()" fill="clear">
+    <ion-icon name="send"></ion-icon>
+  </ion-button>
+</ion-footer>

@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { forkJoin, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { IBooking } from 'src/app/interfaces/IBooking';
 import { ICarShare } from 'src/app/interfaces/ICarShare';
 import { IUser } from 'src/app/interfaces/IUser';
 import { StorageKeys } from './../../enums/storage.enum';
 import { BookingProvider } from './../../providers/booking/booking.provider';
 import { CarShareProvider } from './../../providers/car-share/car-share.provider';
-import { LoadingProvider } from './../../providers/loading/loading.provider';
 import { UserProvider } from './../../providers/user/user.provider';
 import { BaseComponent } from './../../shared/base/base.component';
 
@@ -19,7 +18,7 @@ import { BaseComponent } from './../../shared/base/base.component';
   styleUrls: ['profile.page.scss']
 })
 
-export class ProfilePage extends BaseComponent implements OnInit {
+export class ProfilePage extends BaseComponent {
   public username: string;
   public carSharesUserOwns: ICarShare[];
   public carSharesUserIsBookedOnto: IBooking[];
@@ -30,10 +29,9 @@ export class ProfilePage extends BaseComponent implements OnInit {
     private userProvider: UserProvider,
     private carShareProvider: CarShareProvider,
     private bookingProvider: BookingProvider,
-    protected loadingProvider: LoadingProvider,
     private activatedRoute: ActivatedRoute,
     private router: Router) {
-    super(loadingProvider);
+    super();
   }
 
   public async logout() {
@@ -58,33 +56,25 @@ export class ProfilePage extends BaseComponent implements OnInit {
         this.userProvider.getUserInformation(userId),
         this.carShareProvider.getCarSharesUserOwns(userId),
         this.bookingProvider.getCarSharesUserIsBookedOnto(userId)
-      ]).subscribe((results) => {
+      ]).pipe(
+        takeUntil(this.destroyed)
+      ).subscribe((results) => {
         const [user, carShares, bookings] = results;
 
         this.username = (<IUser>user).username;
         this.carSharesUserOwns = <ICarShare[]>carShares;
         this.carSharesUserIsBookedOnto = <IBooking[]>bookings;
-        this.hideLoader();
 
         resolve();
       });
     });
   }
 
-  ngOnInit() {
-    this.showLoader();
-    this.populateData();
+  ionViewWillEnter() {
+    document.querySelector('ion-tab-bar').style.display = 'flex';
   }
 
-  ionViewWillEnter() {
-    this.activatedRoute.paramMap
-      .pipe(
-        map(() => window.history.state)
-      ).subscribe((data: any) => {
-        if (data && data.forceRefresh) {
-          this.showLoader();
-          this.populateData();
-        }
-      });
+  ionViewDidEnter() {
+    this.populateData();
   }
 }

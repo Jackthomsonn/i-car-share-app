@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title color="light">
+      Messages
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="getRefreshedData($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-list-header>
+      Recent Conversations
+    </ion-list-header>
+
+    <ion-item *ngFor="let message of messages" (click)="invokeChatMode(message)">
+      <ion-avatar slot="start">
+        <img src="../../../assets/avatar-1.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ getRecipientsUsername(message) }}</h2>
+        <p>{{ message.lastMessage }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

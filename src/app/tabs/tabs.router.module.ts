@@ -17,6 +17,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'messages',
+        children: [
+          {
+            path: '',
+            loadChildren: './message/message.module#MessagePageModule'
+          }
+        ]
+      },
+      {
         path: 'profile',
         children: [
           {

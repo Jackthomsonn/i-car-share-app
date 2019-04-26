@@ -1,13 +1,13 @@
-import { LoadingProvider } from './../../providers/loading/loading.provider';
+import { OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
 
-export class BaseComponent {
-  constructor(protected loadingProvider: LoadingProvider) { }
+export class BaseComponent implements OnDestroy {
+  public destroyed: Subject<any> = new Subject();
 
-  showLoader() {
-    this.loadingProvider.isLoading.next(true);
-  }
+  constructor() { }
 
-  hideLoader() {
-    this.loadingProvider.isLoading.next(false);
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 }

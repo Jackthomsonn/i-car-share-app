@@ -58,7 +58,8 @@
           Cancel your booking
           <ion-icon slot="end" name="close-circle-outline"></ion-icon>
         </ion-button>
-        <ion-button expand="block" class="light-text" fill="transparent">
+        <ion-button *ngIf="carShare.ownerInformation._id !== userId" expand="block" class="light-text"
+          fill="transparent" (click)="contactOwner(carShare)">
           Contact owner
         </ion-button>
       </ion-card-content>

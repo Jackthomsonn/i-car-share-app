@@ -25,7 +25,8 @@
     <ion-card-header class="buttons">
       <ion-card-title color="dark">{{ carShare.origin.coordinates | placeName | async }} to
         {{ carShare.destination.coordinates | placeName | async }}</ion-card-title>
-      <ion-card-subtitle color="secondary">Passengers 2/{{ carShare.carInformation.passengers }}</ion-card-subtitle>
+      <ion-card-subtitle color="secondary">Passengers
+        {{ carShare.totalBookedOnPassengers }}/{{ carShare.carInformation.passengers }}</ion-card-subtitle>
       <ion-card-subtitle color="secondary">Car {{ carShare.carInformation.make }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
@@ -33,7 +34,8 @@
         Update car share
         <ion-icon slot="end" name="color-wand"></ion-icon>
       </ion-button>
-      <ion-button expand="block" fill="clear" color="light" (click)="startCarShare(carShare)">
+      <ion-button [disabled]="carShare.totalBookedOnPassengers === 0" expand="block" fill="clear" color="light"
+        (click)="startCarShare(carShare)">
         Start car share
         <ion-icon slot="end" name="happy"></ion-icon>
       </ion-button>

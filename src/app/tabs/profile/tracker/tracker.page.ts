@@ -1,15 +1,15 @@
-declare const google;
-
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { GoogleMap, GoogleMaps, Marker, Polyline } from '@ionic-native/google-maps';
 import { Platform } from '@ionic/angular';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { IBooking } from 'src/app/interfaces/IBooking';
 import { ICarShare } from 'src/app/interfaces/ICarShare';
+import { BaseComponent } from 'src/app/shared/base/base.component';
 import { BookingProvider } from '../../../providers/booking/booking.provider';
 import { SocketServiceProvider } from '../../../providers/socket/socket.provider';
+declare const google;
 
 @Component({
   selector: 'app-tracker',
@@ -17,7 +17,7 @@ import { SocketServiceProvider } from '../../../providers/socket/socket.provider
   styleUrls: ['./tracker.page.scss'],
 })
 
-export class TrackerPage implements OnDestroy {
+export class TrackerPage extends BaseComponent implements OnDestroy {
   public carShare: ICarShare;
   public map: GoogleMap;
   public isHost: boolean;
@@ -39,6 +39,7 @@ export class TrackerPage implements OnDestroy {
     private location: Geolocation,
     private bookingProvider: BookingProvider
   ) {
+    super();
     this.setupDefaultsForClass();
   }
 
@@ -177,7 +178,7 @@ export class TrackerPage implements OnDestroy {
 
     this.startCarShare();
 
-    this.location.watchPosition().subscribe(async (location: Geoposition) => {
+    this.location.watchPosition().pipe(takeUntil(this.destroyed)).subscribe(async (location: Geoposition) => {
       this.socketServiceProvider.emit('location:update', {
         coordinates: {
           type: 'Point',
@@ -226,46 +227,50 @@ export class TrackerPage implements OnDestroy {
       this.getCurrentPositionAndSetupRoute();
     });
 
-    this.bookingProvider.getBookings(this.carShare._id).subscribe((bookings: IBooking[]) => {
-      this.passengerCount = bookings.length;
+    this.bookingProvider.getBookings(this.carShare._id)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe((bookings: IBooking[]) => {
+        this.passengerCount = bookings.length;
 
-      bookings.forEach(booking => {
-        this.locationPoints.push(booking.locationInformation.location.coordinates);
+        bookings.forEach(booking => {
+          this.locationPoints.push(booking.locationInformation.location.coordinates);
 
-        this.getCurrentPositionAndSetupRoute();
+          this.getCurrentPositionAndSetupRoute();
+        });
       });
-    });
   }
 
   private handlePassengerActions() {
     let userMarker: Marker;
     let hostMarker: Marker;
 
-    this.location.watchPosition().subscribe(async (location: Geoposition) => {
-      if (userMarker) {
-        userMarker.remove();
-      }
+    this.location.watchPosition()
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(async (location: Geoposition) => {
+        if (userMarker) {
+          userMarker.remove();
+        }
 
-      this.map.setCameraTarget({
-        lat: location.coords.latitude,
-        lng: location.coords.longitude
-      });
-
-      userMarker = await this.map.addMarker({
-        position: {
+        this.map.setCameraTarget({
           lat: location.coords.latitude,
           lng: location.coords.longitude
-        },
-        rotation: location.coords.heading,
-        icon: {
-          url: this.currentUserMarkerIcon,
-          size: {
-            width: 32,
-            height: 32
+        });
+
+        userMarker = await this.map.addMarker({
+          position: {
+            lat: location.coords.latitude,
+            lng: location.coords.longitude
+          },
+          rotation: location.coords.heading,
+          icon: {
+            url: this.currentUserMarkerIcon,
+            size: {
+              width: 32,
+              height: 32
+            }
           }
-        }
+        });
       });
-    });
 
     this.socketServiceProvider.on('host:location', async (data: any) => {
       this.removeHostMarker(hostMarker);
@@ -298,7 +303,8 @@ export class TrackerPage implements OnDestroy {
 
     this.activatedRoute.paramMap
       .pipe(
-        map(() => window.history.state)
+        map(() => window.history.state),
+        takeUntil(this.destroyed)
       ).subscribe((data) => {
         if (data && data.carShare) {
           this.carShare = data.carShare;

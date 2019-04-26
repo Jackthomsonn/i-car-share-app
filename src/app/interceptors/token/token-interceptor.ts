@@ -7,7 +7,6 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { StorageKeys } from 'src/app/enums/storage.enum';
 import { ErrorProvider } from 'src/app/providers/error/error.provider';
 import { AuthenticationProvider } from '../../providers/authentication/authentication.provider';
-import { LoadingProvider } from './../../providers/loading/loading.provider';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -16,7 +15,6 @@ export class TokenInterceptor implements HttpInterceptor {
     private authenticationProvider: AuthenticationProvider,
     private router: Router,
     private errorProvider: ErrorProvider,
-    private loadingProvider: LoadingProvider,
     private storage: Storage) { }
 
   private isAuthError(error: HttpErrorResponse): boolean {
@@ -66,13 +64,11 @@ export class TokenInterceptor implements HttpInterceptor {
 
       if (this.isForbiddenError(error)) {
         this.router.navigate(['login']);
-        this.loadingProvider.isLoading.next(false);
         this.storage.remove(StorageKeys.ACCESS_TOKEN);
       }
 
       if (this.isNotFoundError(error) || this.isBadRequestError(error) || this.isTooLargeError(error)) {
         this.errorProvider.exceptionCaught.next(error);
-        this.loadingProvider.isLoading.next(false);
       }
 
       return next.handle(request).toPromise();

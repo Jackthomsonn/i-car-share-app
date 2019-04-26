@@ -3,8 +3,10 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { BehaviorSubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { StorageKeys } from 'src/app/enums/storage.enum';
 import { IUser } from 'src/app/interfaces/IUser';
+import { BaseComponent } from 'src/app/shared/base/base.component';
 import { IBooking } from '../../interfaces/IBooking';
 import { ICarShare } from '../../interfaces/ICarShare';
 import { BookingProvider } from './../../providers/booking/booking.provider';
@@ -17,7 +19,7 @@ import { UserProvider } from './../../providers/user/user.provider';
   styleUrls: ['./profile-content.component.scss'],
 })
 
-export class ProfileContentComponent implements OnInit {
+export class ProfileContentComponent extends BaseComponent implements OnInit {
   public username: string;
 
   @Input() carSharesUserOwns: ICarShare[];
@@ -33,12 +35,14 @@ export class ProfileContentComponent implements OnInit {
     private carShareProvider: CarShareProvider,
     private userProvider: UserProvider,
     private storage: Storage
-  ) { }
+  ) {
+    super();
+  }
 
   public cancelBooking(booking: IBooking) {
     const { _id } = booking;
 
-    this.bookingProvider.cancelBooking(_id).subscribe(() => {
+    this.bookingProvider.cancelBooking(_id).pipe(takeUntil(this.destroyed)).subscribe(() => {
       const bookingIndex = this.carSharesUserIsBookedOnto.indexOf(booking);
       this.carSharesUserIsBookedOnto.splice(bookingIndex, 1);
     });
@@ -56,14 +60,14 @@ export class ProfileContentComponent implements OnInit {
       'Are you sure you want to delete this car share?',
       'Delete',
       () => {
-        this.carShareProvider.deleteCarShare(carShare).subscribe(() => {
+        this.carShareProvider.deleteCarShare(carShare).pipe(takeUntil(this.destroyed)).subscribe(() => {
           this.refreshData.emit();
         });
       });
   }
 
   public getRefreshedData(event: any) {
-    const refreshSubscription = this.refreshedData.subscribe((newData: {
+    const refreshSubscription = this.refreshedData.pipe(takeUntil(this.destroyed)).subscribe((newData: {
       carSharesUserOwns: ICarShare[],
       carSharesUserIsBookedOnto: IBooking[]
     }) => {
@@ -131,7 +135,7 @@ export class ProfileContentComponent implements OnInit {
   async ngOnInit() {
     const userId = await this.storage.get(StorageKeys.USER_ID);
 
-    this.userProvider.getUserInformation(userId).subscribe((user: IUser) => {
+    this.userProvider.getUserInformation(userId).pipe(takeUntil(this.destroyed)).subscribe((user: IUser) => {
       this.username = user.username;
     });
   }

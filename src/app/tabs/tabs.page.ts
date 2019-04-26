@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { filter, map } from 'rxjs/operators';
 import { NavigationStart, Router } from '@angular/router';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { BaseComponent } from '../shared/base/base.component';
 
 @Component({
   selector: 'app-tabs',
@@ -8,14 +9,16 @@ import { NavigationStart, Router } from '@angular/router';
   styleUrls: ['tabs.page.scss']
 })
 
-export class TabsPage implements OnInit {
+export class TabsPage extends BaseComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    super();
+  }
 
   ngOnInit() {
     this.router.events.pipe(
       filter(e => e instanceof NavigationStart),
       map(() => this.router.getCurrentNavigation())
-    ).subscribe();
+    ).pipe(takeUntil(this.destroyed)).subscribe();
   }
 }

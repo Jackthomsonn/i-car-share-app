@@ -12,6 +12,7 @@ export interface ICarShare {
   destination: ICoordinates;
   price: number;
   runningDays: Days[];
+  totalBookedOnPassengers?: number;
   bookingId?: string;
   createdAt?: string;
   updatedAt?: string;
